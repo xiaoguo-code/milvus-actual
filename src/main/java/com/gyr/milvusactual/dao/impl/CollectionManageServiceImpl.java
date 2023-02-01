@@ -34,11 +34,10 @@ public class CollectionManageServiceImpl implements CollectionManageService {
 
     @Override
     public R<Boolean> hasCollection(String collectionName) {
-        R<Boolean> response = milvusServiceClient.hasCollection(
+        return milvusServiceClient.hasCollection(
                 HasCollectionParam.newBuilder()
                         .withCollectionName(collectionName)
                         .build());
-        return response;
     }
 
     /**

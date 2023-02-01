@@ -2,10 +2,9 @@ package com.gyr.milvusactual.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
-import com.gyr.milvusactual.dao.MilvusService;
+import com.gyr.milvusactual.dao.VectorDbService;
 import com.gyr.milvusactual.entity.*;
 import com.gyr.milvusactual.pool.ThreadPoolContextManager;
 import io.milvus.client.MilvusServiceClient;
@@ -25,10 +24,8 @@ import io.milvus.response.SearchResultsWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Pattern;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,7 +41,7 @@ public class LoadRunnerTestController {
 
 
     @Autowired
-    private MilvusService milvusService;
+    private VectorDbService milvusService;
 
     @Autowired
     private MilvusServiceClient milvusServiceClient;
@@ -59,7 +56,7 @@ public class LoadRunnerTestController {
         if (StringUtils.isBlank(collectionName)) {
             return "集合名不能为空！";
         }
-        R<RpcStatus> rpcStatusR = milvusService.CollectionManage().loadCollection(collectionName);
+        R<RpcStatus> rpcStatusR = milvusService.collectionManage().loadCollection(collectionName);
         log.info("加载集合至内存,response:{}", rpcStatusR.toString());
 
         return rpcStatusR.toString();
@@ -74,7 +71,7 @@ public class LoadRunnerTestController {
         if (StringUtils.isBlank(collectionName)) {
             return "集合名不能为空！";
         }
-        R<RpcStatus> rpcStatusR = milvusService.CollectionManage().releaseCollection(collectionName);
+        R<RpcStatus> rpcStatusR = milvusService.collectionManage().releaseCollection(collectionName);
         log.info("加载集合至内存,response:{}", rpcStatusR.toString());
 
         return rpcStatusR.toString();
@@ -180,7 +177,7 @@ public class LoadRunnerTestController {
 
         //创建集合
         CreateCollectionParam createCollectionReq = getCreateCollectionParam(collectionName, "库性能测试", dim);
-        milvusService.CollectionManage().createCollection(createCollectionReq);
+        milvusService.collectionManage().createCollection(createCollectionReq);
         //创建分区
         milvusService.partitionManage().createPartition(collectionName, partitionName);
         //创建索引
@@ -360,10 +357,10 @@ public class LoadRunnerTestController {
         }
 
         List<InsertParam.Field> fields = new ArrayList<>();
-        fields.add(new InsertParam.Field("face_id", DataType.Int64, face_id_array));
-        fields.add(new InsertParam.Field("grid_id", DataType.Int64, grid_id_array));
-        fields.add(new InsertParam.Field("capture_time", DataType.Int64, capture_time_array));
-        fields.add(new InsertParam.Field("face_feature", DataType.FloatVector, feature_array));
+//        fields.add(new InsertParam.Field("face_id", DataType.Int64, face_id_array));
+//        fields.add(new InsertParam.Field("grid_id", DataType.Int64, grid_id_array));
+//        fields.add(new InsertParam.Field("capture_time", DataType.Int64, capture_time_array));
+//        fields.add(new InsertParam.Field("face_feature", DataType.FloatVector, feature_array));
         //入库对象构建
         InsertParam insertParam = InsertParam.newBuilder()
                 .withCollectionName(collectionName)

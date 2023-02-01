@@ -1,7 +1,7 @@
 package com.gyr.milvusactual;
 
 import cn.hutool.json.JSONUtil;
-import com.gyr.milvusactual.dao.MilvusService;
+import com.gyr.milvusactual.dao.VectorDbService;
 import com.gyr.milvusactual.entity.Passerby;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.*;
@@ -30,7 +30,7 @@ public class MilvusActualApplicationTests {
     private MilvusServiceClient milvusServiceClient;
 
     @Autowired
-    private MilvusService milvusService;
+    private VectorDbService milvusService;
 
     /**
      * 路人库
@@ -120,7 +120,7 @@ public class MilvusActualApplicationTests {
     @Test
     public void loadCollection() {
 
-        R<RpcStatus> response = milvusService.CollectionManage().loadCollection(collectionName);
+        R<RpcStatus> response = milvusService.collectionManage().loadCollection(collectionName);
         System.out.println("加载集合到内存，response：" + response.toString());
 
 
@@ -132,7 +132,7 @@ public class MilvusActualApplicationTests {
     @Test
     public void dropCollection() {
 
-        R<RpcStatus> response = milvusService.CollectionManage().dropCollection(collectionName);
+        R<RpcStatus> response = milvusService.collectionManage().dropCollection(collectionName);
         System.out.println("删除集合，response：" + response.toString());
 
 
@@ -198,7 +198,7 @@ public class MilvusActualApplicationTests {
     @Test
     public void statisticsCollection() {
 
-        GetCollStatResponseWrapper collectionStatistics = milvusService.CollectionManage().getCollectionStatistics(Passerby.COLLECTION_NAME);
+        GetCollStatResponseWrapper collectionStatistics = milvusService.collectionManage().getCollectionStatistics(Passerby.COLLECTION_NAME);
 
         System.out.println("集合大小，response：" + collectionStatistics.getRowCount());
 

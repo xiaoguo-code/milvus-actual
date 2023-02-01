@@ -11,7 +11,6 @@ import io.milvus.param.alias.CreateAliasParam;
 import io.milvus.param.alias.DropAliasParam;
 import io.milvus.param.collection.*;
 import io.milvus.param.control.GetCompactionStateParam;
-import io.milvus.param.control.ManualCompactionParam;
 import io.milvus.param.dml.DeleteParam;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.response.DescCollResponseWrapper;
@@ -68,12 +67,13 @@ public class DataManageServiceImpl implements DataManageService {
      */
     @Override
     public R<ManualCompactionResponse> manualCompaction(String collectionName) {
-        R<ManualCompactionResponse> response = milvusServiceClient.manualCompaction(
-                ManualCompactionParam.newBuilder()
-                        .withCollectionName(collectionName)
-                        .build());
+//        R<ManualCompactionResponse> response = milvusServiceClient.manualCompaction(
+//                ManualCompactionParam.newBuilder()
+//                        .withCollectionName(collectionName)
+//                        .build());
 //        long compactionID = response.getData().getCompactionID();
-        return response;
+//        return response;
+        return null;
     }
 
     /**

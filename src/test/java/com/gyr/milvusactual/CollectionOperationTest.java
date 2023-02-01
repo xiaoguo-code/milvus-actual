@@ -4,6 +4,7 @@ import com.gyr.milvusactual.dao.VectorDbService;
 import com.gyr.milvusactual.entity.Face;
 import com.gyr.milvusactual.entity.FaceTest;
 import com.gyr.milvusactual.entity.Passerby;
+import com.gyr.milvusactual.service.BusinessOperationService;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.DataType;
 import io.milvus.grpc.GetCollectionStatisticsResponse;
@@ -15,7 +16,6 @@ import io.milvus.param.RpcStatus;
 import io.milvus.param.collection.CreateCollectionParam;
 import io.milvus.param.collection.FieldType;
 import io.milvus.param.collection.GetCollectionStatisticsParam;
-import io.milvus.param.collection.HasCollectionParam;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.param.index.CreateIndexParam;
 import io.milvus.param.partition.CreatePartitionParam;
@@ -31,54 +31,57 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @desc:
+ * @desc: 集合操作
  * @Author: guoyr
  * @Date: 2022-02-14 23:01
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MilvusActualApplication.class})
-public class DataInsertOperationTest {
+public class CollectionOperationTest {
 
 
     @Autowired
-    private VectorDbService milvusService;
+    private BusinessOperationService businessOperationService;
+
+    @Autowired
+    private VectorDbService vectorDbService;
 
 
     @Autowired
     private MilvusServiceClient milvusServiceClient;
 
-    final String collectionName = "passerby_202202208";
+    final String collectionName = "passerby_20230201";
 
 
     /**
-     * 模拟路人库按时间创建集合，按区域创建分区进行入库
+     * 创建集合
      */
     @Test
-    public void mainInsertTest() {
+    public void createCollectionTest() {
 
         //删除集合
-        dropCollection(collectionName);
+        businessOperationService.dropCollection(collectionName);
 
         //创建集合
-        createCollection(collectionName, "厦门市路人库举例");
+        businessOperationService.createCollection(collectionName, "厦门市路人库举例");
 
         //创建分区-可不创建，默认default分区, 分区：将收集的数据划分为物理存储上的多个部分，每个分区可以包含多个segment
-        createPartition(collectionName, "SM");//思明区
-        createPartition(collectionName, "HL");//湖里区
-        createPartition(collectionName, "TA");//同安区
-        createPartition(collectionName, "XA");//翔安区
-        createPartition(collectionName, "JM");//集美区
-        createPartition(collectionName, "HC");//海沧区
+//        businessOperationService.createPartition(collectionName, "SM");//思明区
+//        businessOperationService.createPartition(collectionName, "HL");//湖里区
+//        businessOperationService.createPartition(collectionName, "TA");//同安区
+//        businessOperationService.createPartition(collectionName, "XA");//翔安区
+//        businessOperationService.createPartition(collectionName, "JM");//集美区
+//        businessOperationService.createPartition(collectionName, "HC");//海沧区
 
         //创建索引
-        createIndex(collectionName);
+//        businessOperationService.createIndex(collectionName);
 
 
         //插入数据
-        dataInsert(collectionName, 10);
+//        businessOperationService.dataInsert(collectionName, 10);
 
         //获取集合大小
-        collectionStatistics(collectionName);
+//        businessOperationService.collectionStatistics(collectionName);
 
     }
 
@@ -164,90 +167,10 @@ public class DataInsertOperationTest {
     }
 
 
-    private void dropCollection(String collectionName) {
-        R<RpcStatus> response = milvusService.collectionManage().dropCollection(collectionName);
-        System.out.println("删除集合，response：" + response.toString());
-    }
 
-    /**
-     * 创建集合
-     *
-     * @param collectionName
-     * @param description
-     */
-    private void createCollection(String collectionName, String description) {
 
-        //判断集合是否存在
-        HasCollectionParam hasCollectionParam = HasCollectionParam.newBuilder()   //构建参数
-                .withCollectionName(collectionName)    //就一个集合名称
-                .build();
-        R<Boolean> response = milvusServiceClient.hasCollection(hasCollectionParam);
-        System.out.println("集合是否存在，response：" + response);
 
-        if (Boolean.FALSE.equals(response.getData())) {
-            //创建集合
-            CreateCollectionParam createCollectionReq = getCreateCollectionParam(collectionName, description);
-            R<RpcStatus> respCreateCollection = milvusServiceClient.createCollection(createCollectionReq);
-            System.out.println("创建集合，response：" + respCreateCollection.toString());
-        }
-    }
 
-    /**
-     * 集合表结构
-     *
-     * @return
-     */
-    private CreateCollectionParam getCreateCollectionParam(String collectionName, String description) {
-
-        //face_id
-        FieldType fieldType1 = FieldType.newBuilder()
-                .withName(Passerby.Field.FACE_ID)               //创建的字段名称
-                .withDataType(DataType.Int64)     //创建的数据类型
-                .withPrimaryKey(true)             //是否作为主键
-                .withAutoID(false)                //是否自动ID（主键）分配
-                .withDescription("face_id")
-                .build();
-        //quality_score
-        FieldType fieldType2 = FieldType.newBuilder()
-                .withName(Passerby.Field.QUALITY_SCORE)
-                .withDataType(DataType.Double)
-                .withDescription("quality_score")
-                .build();
-        //lon
-        FieldType lon = FieldType.newBuilder()
-                .withName("lon")
-                .withDataType(DataType.Double)
-                .withDescription("lon")
-                .build();
-        //lat
-        FieldType lat = FieldType.newBuilder()
-                .withName("lat")
-                .withDataType(DataType.Double)
-                .withDescription("lat")
-                .build();
-        //feature
-        FieldType fieldType3 = FieldType.newBuilder()
-                .withName(Passerby.Field.FACE_FEATURE)
-                .withDataType(DataType.FloatVector)  //浮点向量字段
-                .withDimension(Passerby.FEATURE_DIM)
-                .withDescription("feature")//向量维度，这里表示一个名为feature的二维浮点向量字段
-                .build();
-
-        //集合对象
-        CreateCollectionParam createCollectionReq = CreateCollectionParam.newBuilder()
-                .withCollectionName(collectionName)             //集合名称
-                .withDescription(Passerby.COLLECTION_DESCRIPTION)           //集合描述
-                .withShardsNum(Passerby.SHARDS_NUM)                      //分片数量，这里表示双分片
-                .addFieldType(fieldType1)              //添加字段
-                .addFieldType(fieldType2)
-                .addFieldType(lon)
-                .addFieldType(lat)
-                .addFieldType(fieldType3)               //或者withFieldTypes(fieldTypes)
-
-                .build();
-
-        return createCollectionReq;
-    }
 
     /**
      * 数据插入

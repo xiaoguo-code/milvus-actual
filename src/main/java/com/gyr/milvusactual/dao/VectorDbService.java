@@ -4,16 +4,16 @@ package com.gyr.milvusactual.dao;
 import io.milvus.param.R;
 
 /**
- * milvus
+ * 向量数据库服务接口
  */
-public interface MilvusService {
+public interface VectorDbService {
 
 
     /**
      * 集合管理相关操作
      * @return
      */
-    CollectionManageService CollectionManage();
+    CollectionManageService collectionManage();
 
 
     /**
