@@ -1,0 +1,10 @@
+server:
+  port: 8888
+
+
+
+
+database:
+  milvus:
+    host: 124.221.237.254
+    port: 19530
