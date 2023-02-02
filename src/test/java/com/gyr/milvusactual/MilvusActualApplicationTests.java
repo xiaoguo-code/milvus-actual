@@ -2,7 +2,7 @@ package com.gyr.milvusactual;
 
 import cn.hutool.json.JSONUtil;
 import com.gyr.milvusactual.dao.VectorDbService;
-import com.gyr.milvusactual.entity.Passerby;
+import com.gyr.milvusactual.entity.PasserbyCollectionConfig;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.*;
 import io.milvus.param.IndexType;
@@ -141,7 +141,7 @@ public class MilvusActualApplicationTests {
     @Test
     public void dropPartition() {
 
-        R<RpcStatus> response = milvusService.partitionManage().dropPartition(Passerby.COLLECTION_NAME, Passerby.getPartitionName(1));
+        R<RpcStatus> response = milvusService.partitionManage().dropPartition(PasserbyCollectionConfig.COLLECTION_NAME, PasserbyCollectionConfig.getPartitionName(1));
         System.out.println("删除分区，response：" + response.toString());
 
 
@@ -198,7 +198,7 @@ public class MilvusActualApplicationTests {
     @Test
     public void statisticsCollection() {
 
-        GetCollStatResponseWrapper collectionStatistics = milvusService.collectionManage().getCollectionStatistics(Passerby.COLLECTION_NAME);
+        GetCollStatResponseWrapper collectionStatistics = milvusService.collectionManage().getCollectionStatistics(PasserbyCollectionConfig.COLLECTION_NAME);
 
         System.out.println("集合大小，response：" + collectionStatistics.getRowCount());
 

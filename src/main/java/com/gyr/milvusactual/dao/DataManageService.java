@@ -10,6 +10,8 @@ import io.milvus.param.dml.InsertParam;
 import io.milvus.response.DescCollResponseWrapper;
 import io.milvus.response.GetCollStatResponseWrapper;
 
+import java.util.List;
+
 /**
  * 数据管理
  */
@@ -18,11 +20,11 @@ public interface DataManageService {
 
     /**
      * 插入数据
-     *
-     * @param insertParam
+     * @param collectionName
+     * @param fields
      * @return
      */
-    R<MutationResult> insert(InsertParam insertParam);
+    R<MutationResult> insert(String collectionName, String partitionName, List<InsertParam.Field> fields);
 
     /**
      * 删除数据

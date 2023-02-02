@@ -15,10 +15,16 @@ import io.milvus.param.dml.DeleteParam;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.response.DescCollResponseWrapper;
 import io.milvus.response.GetCollStatResponseWrapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
+@Slf4j
 public class DataManageServiceImpl implements DataManageService {
 
 
@@ -32,13 +38,29 @@ public class DataManageServiceImpl implements DataManageService {
     /**
      * 插入数据
      *
-     * @param insertParam
+     * @param collectionName
+     * @param fields
      * @return
      */
     @Override
-    public R<MutationResult> insert(InsertParam insertParam) {
-        R<MutationResult> response = milvusServiceClient.insert(insertParam);
-        return response;
+    public R<MutationResult> insert(String collectionName, String partitionName, List<InsertParam.Field> fields) {
+        //插入
+        InsertParam.Builder builder = InsertParam.newBuilder();
+        if (StringUtils.isNotBlank(collectionName)) {
+            builder.withCollectionName(collectionName);
+        }
+        if (StringUtils.isNotBlank(partitionName)) {
+            builder.withPartitionName(partitionName);
+        }
+        if (CollectionUtils.isNotEmpty(fields)) {
+            builder.withFields(fields);
+        }
+        InsertParam insertParam = builder.build();
+        R<MutationResult> insert = milvusServiceClient.insert(insertParam);
+        String result = insert.getStatus().equals(0) ? "InsertRequest successfully! Total number of " +
+                "inserts:{" + insert.getData().getInsertCnt() + "} entities" : "InsertRequest failed!";
+        log.info("插入:{}", result);
+        return insert;
     }
 
     /**

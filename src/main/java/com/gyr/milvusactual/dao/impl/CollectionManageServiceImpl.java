@@ -2,9 +2,8 @@ package com.gyr.milvusactual.dao.impl;
 
 
 import com.gyr.milvusactual.dao.CollectionManageService;
-import com.gyr.milvusactual.entity.Passerby;
+import com.gyr.milvusactual.entity.PasserbyCollectionConfig;
 import io.milvus.client.MilvusServiceClient;
-import io.milvus.grpc.DataType;
 import io.milvus.grpc.DescribeCollectionResponse;
 import io.milvus.grpc.GetCollectionStatisticsResponse;
 import io.milvus.grpc.ShowCollectionsResponse;
@@ -18,8 +17,6 @@ import io.milvus.response.DescCollResponseWrapper;
 import io.milvus.response.GetCollStatResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.security.spec.PSSParameterSpec;
 
 @Service
 public class CollectionManageServiceImpl implements CollectionManageService {
@@ -60,7 +57,7 @@ public class CollectionManageServiceImpl implements CollectionManageService {
     public DescCollResponseWrapper describeCollection(String collectionName) {
         R<DescribeCollectionResponse> respDescribeCollection = milvusServiceClient.describeCollection(          //返回集合名称和分配信息
                 DescribeCollectionParam.newBuilder()
-                        .withCollectionName("book")
+                        .withCollectionName(collectionName)
                         .build());
         DescCollResponseWrapper wrapperDescribeCollection = new DescCollResponseWrapper(respDescribeCollection.getData());
         return wrapperDescribeCollection;
@@ -76,7 +73,7 @@ public class CollectionManageServiceImpl implements CollectionManageService {
     public GetCollStatResponseWrapper getCollectionStatistics(String collectionName) {
         R<GetCollectionStatisticsResponse> respCollectionStatistics = milvusServiceClient.getCollectionStatistics(   // Return the statistics information of the collectionName.
                 GetCollectionStatisticsParam.newBuilder()
-                        .withCollectionName(Passerby.COLLECTION_NAME)
+                        .withCollectionName(collectionName)
                         .build());
         GetCollStatResponseWrapper wrapperCollectionStatistics = new GetCollStatResponseWrapper(respCollectionStatistics.getData());
         System.out.println("Collection row count: " + wrapperCollectionStatistics.getRowCount());

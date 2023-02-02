@@ -122,7 +122,7 @@ public class LoadRunnerTestController {
 
             for (int j = 0; j < scores.size(); j++) {
                 SearchResultsWrapper.IDScore idScore = scores.get(j);
-                log.info(Passerby.Field.FACE_ID + ":" + idScore.getLongID() + "         grid_id:" + gridIddData.get(j) +
+                log.info(PasserbyCollectionConfig.Field.ID + ":" + idScore.getLongID() + "         grid_id:" + gridIddData.get(j) +
                         "          capture_time:" + captureTimeData.get(j) + "         distance:" + idScore.getScore());
                 SearchResultVo resultVo = new SearchResultVo();
                 resultVo.setFaceId(idScore.getLongID());

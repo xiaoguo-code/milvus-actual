@@ -1,7 +1,7 @@
 package com.gyr.milvusactual;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.gyr.milvusactual.entity.Passerby;
+import com.gyr.milvusactual.entity.PasserbyCollectionConfig;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.*;
 import io.milvus.param.Constant;
@@ -102,7 +102,7 @@ public class DataSearchOperationTest {
         final String SEARCH_PARAM = "{\"nprobe\":10}";    // Params
 
         //指定输出字段
-        List<String> search_output_fields = Arrays.asList(Passerby.Field.FACE_ID);
+        List<String> search_output_fields = Arrays.asList(PasserbyCollectionConfig.Field.ID);
 
 
         //查询参数
@@ -112,12 +112,12 @@ public class DataSearchOperationTest {
 
         SearchParam.Builder builder = SearchParam.newBuilder()
                 .withCollectionName(collectionName)//集合名称
-//                .withPartitionNames(Arrays.asList(Passerby.getPartitionName(time)))   //分区列表
+//                .withPartitionNames(Arrays.asList(PasserbyCollectionConfig.getPartitionName(time)))   //分区列表
                 .withOutFields(search_output_fields)    //指定输出字段,向量字段不支持，会打印异常信息search doesn't support vector field as output_fields
                 .withTopK(10)                    //topN
                 .withMetricType(MetricType.L2)         //默认 MetricType.L2 欧几里得距离
                 .withVectors(search_vectors)           //向量
-                .withVectorFieldName(Passerby.Field.FACE_FEATURE)           //向量字段名
+                .withVectorFieldName(PasserbyCollectionConfig.Field.FEATURE)           //向量字段名
                 .withExpr("")                          //布尔表达式，设置该表达式后即为向量混合搜索，如下面dataHybridSearch()方法所示
                 .withParams(SEARCH_PARAM)              //因为向量索引是IVF_FLAT，nprobe表示要查询的单位数，该索引建议数值为10，该数值也大，性能越差
                 .withTravelTimestamp(0L)                                    //默认
@@ -136,12 +136,12 @@ public class DataSearchOperationTest {
         for (int i = 0; i < search_vectors.size(); ++i) {
             List<SearchResultsWrapper.IDScore> scores = searchResultsWrapper.getIDScore(i);
 
-//            List<?> fieldData = searchResultsWrapper.getFieldData(Passerby.Field.QUALITY_SCORE, i);
+//            List<?> fieldData = searchResultsWrapper.getFieldData(PasserbyCollectionConfig.Field.QUALITY_SCORE, i);
 
             for (int j = 0; j < scores.size(); j++) {
 
                 SearchResultsWrapper.IDScore idScore = scores.get(j);
-                System.out.println(Passerby.Field.FACE_ID + ":" + idScore.getLongID()  + "         distance:" + idScore.getScore());
+                System.out.println(PasserbyCollectionConfig.Field.ID + ":" + idScore.getLongID()  + "         distance:" + idScore.getScore());
             }
         }
     }
@@ -158,7 +158,7 @@ public class DataSearchOperationTest {
         final String exr = "lon == 12.12345 and lat == 12.123456";
 
         //指定输出字段
-        List<String> search_output_fields = Arrays.asList(Passerby.Field.FACE_ID, Passerby.Field.QUALITY_SCORE,"lon","lat");
+        List<String> search_output_fields = Arrays.asList(PasserbyCollectionConfig.Field.ID, PasserbyCollectionConfig.Field.QUALITY_SCORE,"lon","lat");
 
         //查询参数
         List<List<Float>> search_vectors = Arrays.asList(Arrays.asList(0.1f, 0.2f));
@@ -170,7 +170,7 @@ public class DataSearchOperationTest {
                 .withTopK(SEARCH_K)                    //topN
                 .withMetricType(MetricType.L2)
                 .withVectors(search_vectors)           //向量 非空
-                .withVectorFieldName(Passerby.Field.FACE_FEATURE)           //向量字段名
+                .withVectorFieldName(PasserbyCollectionConfig.Field.FEATURE)           //向量字段名
                 .withExpr(exr)
                 .withParams(SEARCH_PARAM);
         if (CollectionUtil.isNotEmpty(partitionNames)) {
@@ -187,12 +187,12 @@ public class DataSearchOperationTest {
         for (int i = 0; i < search_vectors.size(); ++i) {
             List<SearchResultsWrapper.IDScore> scores = searchResultsWrapper.getIDScore(i);
 
-            List<?> fieldData = searchResultsWrapper.getFieldData(Passerby.Field.QUALITY_SCORE, i);
+            List<?> fieldData = searchResultsWrapper.getFieldData(PasserbyCollectionConfig.Field.QUALITY_SCORE, i);
 
             for (int j = 0; j < scores.size(); j++) {
 
                 SearchResultsWrapper.IDScore idScore = scores.get(j);
-                System.out.println(Passerby.Field.FACE_ID + ":" + idScore.getLongID() + "         quality_score:" + fieldData.get(j) + "         distance:" + idScore.getScore());
+                System.out.println(PasserbyCollectionConfig.Field.ID + ":" + idScore.getLongID() + "         quality_score:" + fieldData.get(j) + "         distance:" + idScore.getScore());
             }
         }
     }
@@ -210,7 +210,7 @@ public class DataSearchOperationTest {
         final String exr = "face_id>=3 && face_id <= 8";
 
         //指定输出字段
-        List<String> search_output_fields = Arrays.asList(Passerby.Field.FACE_ID, Passerby.Field.QUALITY_SCORE);
+        List<String> search_output_fields = Arrays.asList(PasserbyCollectionConfig.Field.ID, PasserbyCollectionConfig.Field.QUALITY_SCORE);
 
         //查询参数
         List<List<Float>> search_vectors = Arrays.asList(Arrays.asList(0.1f, 0.2f));
@@ -230,11 +230,11 @@ public class DataSearchOperationTest {
         //打印查询结果
         QueryResults data = query.getData();
         QueryResultsWrapper queryResultsWrapper = new QueryResultsWrapper(data);
-        List<?> faceIdList = queryResultsWrapper.getFieldWrapper(Passerby.Field.FACE_ID).getFieldData();
-        List<?> qualityScoreList = queryResultsWrapper.getFieldWrapper(Passerby.Field.QUALITY_SCORE).getFieldData();
+        List<?> faceIdList = queryResultsWrapper.getFieldWrapper(PasserbyCollectionConfig.Field.ID).getFieldData();
+        List<?> qualityScoreList = queryResultsWrapper.getFieldWrapper(PasserbyCollectionConfig.Field.QUALITY_SCORE).getFieldData();
         for (int j = 0; j < faceIdList.size(); j++) {
 
-            System.out.println(Passerby.Field.FACE_ID + ":" + faceIdList.get(j) + "         quality_score:" + qualityScoreList.get(j));
+            System.out.println(PasserbyCollectionConfig.Field.ID + ":" + faceIdList.get(j) + "         quality_score:" + qualityScoreList.get(j));
         }
 
     }

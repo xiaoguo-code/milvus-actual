@@ -8,5 +8,6 @@ public interface BusinessOperationService {
 
     void createCollection(String collectionName, String description);
 
+    void createPartition(String collectionName, String partitionName);
 
 }

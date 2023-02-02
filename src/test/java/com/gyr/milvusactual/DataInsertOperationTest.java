@@ -3,7 +3,7 @@ package com.gyr.milvusactual;
 import com.gyr.milvusactual.dao.VectorDbService;
 import com.gyr.milvusactual.entity.Face;
 import com.gyr.milvusactual.entity.FaceTest;
-import com.gyr.milvusactual.entity.Passerby;
+import com.gyr.milvusactual.entity.PasserbyCollectionConfig;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.DataType;
 import io.milvus.grpc.GetCollectionStatisticsResponse;
@@ -128,7 +128,7 @@ public class DataInsertOperationTest {
         R<RpcStatus> index = milvusServiceClient.createIndex(
                 CreateIndexParam.newBuilder()
                         .withCollectionName(collectionName)
-                        .withFieldName(Passerby.Field.FACE_FEATURE)         //字段名
+                        .withFieldName(PasserbyCollectionConfig.Field.FEATURE)         //字段名
                         .withIndexType(IndexType.IVF_FLAT)        //索引类型，
                         .withMetricType(MetricType.L2)    //设置指标类型，距离的计算方式
                         .withExtraParam(INDEX_PARAM)      //外加参数
@@ -201,7 +201,7 @@ public class DataInsertOperationTest {
 
         //face_id
         FieldType fieldType1 = FieldType.newBuilder()
-                .withName(Passerby.Field.FACE_ID)               //创建的字段名称
+                .withName(PasserbyCollectionConfig.Field.ID)               //创建的字段名称
                 .withDataType(DataType.Int64)     //创建的数据类型
                 .withPrimaryKey(true)             //是否作为主键
                 .withAutoID(false)                //是否自动ID（主键）分配
@@ -209,7 +209,7 @@ public class DataInsertOperationTest {
                 .build();
         //quality_score
         FieldType fieldType2 = FieldType.newBuilder()
-                .withName(Passerby.Field.QUALITY_SCORE)
+                .withName(PasserbyCollectionConfig.Field.QUALITY_SCORE)
                 .withDataType(DataType.Double)
                 .withDescription("quality_score")
                 .build();
@@ -227,17 +227,17 @@ public class DataInsertOperationTest {
                 .build();
         //feature
         FieldType fieldType3 = FieldType.newBuilder()
-                .withName(Passerby.Field.FACE_FEATURE)
+                .withName(PasserbyCollectionConfig.Field.FEATURE)
                 .withDataType(DataType.FloatVector)  //浮点向量字段
-                .withDimension(Passerby.FEATURE_DIM)
+                .withDimension(PasserbyCollectionConfig.FEATURE_DIM)
                 .withDescription("feature")//向量维度，这里表示一个名为feature的二维浮点向量字段
                 .build();
 
         //集合对象
         CreateCollectionParam createCollectionReq = CreateCollectionParam.newBuilder()
                 .withCollectionName(collectionName)             //集合名称
-                .withDescription(Passerby.COLLECTION_DESCRIPTION)           //集合描述
-                .withShardsNum(Passerby.SHARDS_NUM)                      //分片数量，这里表示双分片
+                .withDescription(PasserbyCollectionConfig.COLLECTION_DESCRIPTION)           //集合描述
+                .withShardsNum(PasserbyCollectionConfig.SHARDS_NUM)                      //分片数量，这里表示双分片
                 .addFieldType(fieldType1)              //添加字段
                 .addFieldType(fieldType2)
                 .addFieldType(lon)
@@ -294,17 +294,17 @@ public class DataInsertOperationTest {
 
                 //向量
                 List<Float> vector = new ArrayList<>();
-                for (int k = 0; k < Passerby.FEATURE_DIM; ++k) {
+                for (int k = 0; k < PasserbyCollectionConfig.FEATURE_DIM; ++k) {
                     vector.add(ran.nextFloat());
                 }
                 feature_array.add(vector);
             }
             List<InsertParam.Field> fields = new ArrayList<>();
-//            fields.add(new InsertParam.Field(Passerby.Field.FACE_ID, DataType.Int64, face_id_array));
-//            fields.add(new InsertParam.Field(Passerby.Field.QUALITY_SCORE, DataType.Double, quality_score_array));
+//            fields.add(new InsertParam.Field(PasserbyCollectionConfig.Field.ID, DataType.Int64, face_id_array));
+//            fields.add(new InsertParam.Field(PasserbyCollectionConfig.Field.QUALITY_SCORE, DataType.Double, quality_score_array));
 //            fields.add(new InsertParam.Field("lon", DataType.Double, lon_array));
 //            fields.add(new InsertParam.Field("lat", DataType.Double, lat_array));
-//            fields.add(new InsertParam.Field(Passerby.Field.FACE_FEATURE, DataType.FloatVector, feature_array));
+//            fields.add(new InsertParam.Field(PasserbyCollectionConfig.Field.FEATURE, DataType.FloatVector, feature_array));
             //入库对象构建
             InsertParam insertParam = InsertParam.newBuilder()
                     .withCollectionName(collectionName)
