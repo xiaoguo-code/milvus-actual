@@ -1,6 +1,5 @@
 package com.gyr.milvusactual.entity;
 
-import com.sun.xml.internal.bind.v2.model.core.ReferencePropertyInfo;
 import lombok.Data;
 
 /**

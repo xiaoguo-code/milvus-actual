@@ -5,8 +5,9 @@
  * Copyright © Meiya Corporation. All rights reserved.
  */
 
-package com.gyr.milvusactual.pool;
+package com.gyr.milvusactual.common.thread;
 
+import com.gyr.milvusactual.common.thread.MyThreadPool;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;

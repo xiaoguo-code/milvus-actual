@@ -1,4 +1,4 @@
-package com.gyr.milvusactual.dao;
+package com.gyr.milvusactual.dao.milvus;
 
 import io.milvus.grpc.GetCompactionStateResponse;
 import io.milvus.grpc.ManualCompactionResponse;
@@ -20,19 +20,24 @@ public interface DataManageService {
 
     /**
      * 插入数据
+     *
      * @param collectionName
-     * @param fields
+     * @param partitionName
+     * @param ids
+     * @param name
+     * @param feature
      * @return
      */
-    R<MutationResult> insert(String collectionName, String partitionName, List<InsertParam.Field> fields);
+    long insert(String collectionName, String partitionName, List<Long> ids, List<String> name, List<List<Float>> feature);
 
     /**
      * 删除数据
+     *
      * @param collectionName
      * @param deleteExpr
      * @return
      */
-    R<MutationResult> delete(String collectionName, String deleteExpr);
+    Boolean delete(String collectionName, String deleteExpr);
 
 
     /*
@@ -54,7 +59,7 @@ public interface DataManageService {
      * @param compactionID
      * @return
      */
-    R<GetCompactionStateResponse> getCompactionState(long compactionID);
+    GetCompactionStateResponse getCompactionState(long compactionID);
 
 
 }

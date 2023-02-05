@@ -1,4 +1,4 @@
-package com.gyr.milvusactual.pool;
+package com.gyr.milvusactual.common.factory;
 
 import java.util.concurrent.ThreadFactory;
 

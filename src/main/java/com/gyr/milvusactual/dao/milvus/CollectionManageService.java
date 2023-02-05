@@ -1,4 +1,4 @@
-package com.gyr.milvusactual.dao;
+package com.gyr.milvusactual.dao.milvus;
 
 import io.milvus.grpc.ShowCollectionsResponse;
 import io.milvus.param.R;
@@ -20,7 +20,7 @@ public interface CollectionManageService {
      * @param collectionName
      * @return
      */
-    R<Boolean> hasCollection(String collectionName);
+    Boolean hasCollection(String collectionName);
 
     /**
      * 获取集合列表
@@ -40,19 +40,19 @@ public interface CollectionManageService {
      * @param collectionName
      * @return
      */
-    GetCollStatResponseWrapper getCollectionStatistics(String collectionName);
+    long getCollectionStatistics(String collectionName);
 
     /**
      * 创建集合
      */
-    R<RpcStatus> createCollection(CreateCollectionParam createCollectionReq);
+    Boolean createCollection(String collectionName);
 
     /**
      * 删除集合
      * @param collectionName
      * @return
      */
-    R<RpcStatus> dropCollection(String collectionName);
+    Boolean dropCollection(String collectionName);
 
 
     /*--------------------集合别名管理--------------------*/
@@ -61,7 +61,7 @@ public interface CollectionManageService {
      * @param collectionName
      * @param aliasName
      */
-    R<RpcStatus> createAlias(String collectionName,String aliasName);
+    Boolean createAlias(String collectionName,String aliasName);
 
     /**
      * 修改集合别名
@@ -69,7 +69,7 @@ public interface CollectionManageService {
      * @param aliasName
      * @return
      */
-    R<RpcStatus> alterAlias(String collectionName,String aliasName);
+    Boolean alterAlias(String collectionName,String aliasName);
 
     /**
      * 删除集合别名
@@ -77,7 +77,7 @@ public interface CollectionManageService {
      * @param aliasName
      * @return
      */
-    R<RpcStatus> dropAlias(String collectionName,String aliasName);
+    Boolean dropAlias(String collectionName,String aliasName);
 
 
     /*--------------------加载集合--------------------*/
@@ -87,12 +87,12 @@ public interface CollectionManageService {
      * @param collectionName
      * @return
      */
-    R<RpcStatus> loadCollection(String collectionName);
+    Boolean loadCollection(String collectionName);
 
     /**
      * 释放集合--从内存中释放集合以减少内存使用
      * @param collectionName
      * @return
      */
-    R<RpcStatus> releaseCollection(String collectionName);
+    Boolean releaseCollection(String collectionName);
 }

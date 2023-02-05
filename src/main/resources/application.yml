@@ -8,3 +8,10 @@ database:
   milvus:
     host: 124.221.237.254
     port: 19530
+
+engine:
+  # 虹软
+  arcSoft:
+    appId:
+    sdkKey:
+    lib:

@@ -1,5 +1,6 @@
-package com.gyr.milvusactual.pool;
+package com.gyr.milvusactual.common.thread;
 
+import com.gyr.milvusactual.common.factory.MyThreadFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.*;

@@ -1,11 +1,8 @@
-package com.gyr.milvusactual.dao;
+package com.gyr.milvusactual.dao.milvus;
 
-import io.milvus.grpc.ShowCollectionsResponse;
 import io.milvus.grpc.ShowPartitionsResponse;
 import io.milvus.param.R;
 import io.milvus.param.RpcStatus;
-import io.milvus.response.DescCollResponseWrapper;
-import io.milvus.response.GetCollStatResponseWrapper;
 
 /**
  * 分区管理
@@ -20,7 +17,7 @@ public interface PartitionManageService {
      * @param partitionName
      * @return
      */
-    R<RpcStatus> createPartition(String collectionName, String partitionName);
+    Boolean createPartition(String collectionName, String partitionName);
 
 
     /**
@@ -30,7 +27,7 @@ public interface PartitionManageService {
      * @param partitionName
      * @return
      */
-    R<Boolean> hasPartition(String collectionName, String partitionName);
+    Boolean hasPartition(String collectionName, String partitionName);
 
 
     /**
@@ -39,7 +36,7 @@ public interface PartitionManageService {
      * @param collectionName
      * @return
      */
-    R<ShowPartitionsResponse> showPartitions(String collectionName);
+    ShowPartitionsResponse showPartitions(String collectionName);
 
     /**
      * 删除指定集合中的分区
@@ -48,5 +45,5 @@ public interface PartitionManageService {
      * @param partitionName
      * @return
      */
-    R<RpcStatus> dropPartition(String collectionName, String partitionName);
+    Boolean dropPartition(String collectionName, String partitionName);
 }
