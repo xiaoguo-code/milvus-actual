@@ -29,6 +29,7 @@ public class MilvusClientPoolConfig {
         // 对象池配置
         GenericObjectPoolConfig<FaceEngine> objectPoolConfig = new GenericObjectPoolConfig<>();
         objectPoolConfig.setMaxTotal(8);
+        objectPoolConfig.setJmxEnabled(false);
         AbandonedConfig abandonedConfig = new AbandonedConfig();
 
         abandonedConfig.setRemoveAbandonedOnMaintenance(true); //在Maintenance的时候检查是否有泄漏

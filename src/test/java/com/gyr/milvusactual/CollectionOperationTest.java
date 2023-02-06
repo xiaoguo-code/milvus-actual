@@ -1,7 +1,6 @@
 package com.gyr.milvusactual;
 
 import com.gyr.milvusactual.dao.VectorDbService;
-import com.gyr.milvusactual.entity.FaceTest;
 import com.gyr.milvusactual.config.AlbumCollectionConfig;
 import com.gyr.milvusactual.entity.People;
 import com.gyr.milvusactual.service.BusinessOperationService;

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds" debug="false">
+    <contextName>faceEngine</contextName>
+    <property name="log.path" value="log/%d{yyyyMMdd}/milvus-actual" />
+<!--    <springProperty scope="context" name="logPath" source="mylog.path" defaultValue="logs"/>-->
+    <property name="log.maxHistory" value="3" />
+    <property name="log.maxSize" value="500MB" />
+    <property name="log.totalSizeCap" value="1GB" />
+    <property name="log.colorPattern" value="%d{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldBlue(%thread) | %green(%logger) - %green(%M) | %boldMagenta(%msg) %n"/>
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} %M - %msg%n" />
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!--info信息输出到文件-->
+    <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/all.%i.log</fileNamePattern>
+            <MaxFileSize>${log.maxSize}</MaxFileSize>
+            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error.%i.log</fileNamePattern>
+            <MaxFileSize>${log.maxSize}</MaxFileSize>
+            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+
+
+    <root level="info">
+        <appender-ref ref="console" />
+    </root>
+
+    <root level="error">
+        <appender-ref ref="file_error" />
+    </root>
+
+    <root level="info">
+        <appender-ref ref="file_info" />
+    </root>
+
+    <!--logback.LogbackDemo：类的全路径 -->
+<!--    <logger name="logback.LogbackDemo" level="INFO" additivity="false">-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--    </logger>-->
+</configuration>

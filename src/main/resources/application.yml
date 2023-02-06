@@ -9,6 +9,14 @@ database:
     host: 124.221.237.254
     port: 19530
 
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+uploadFile:
+  tempLocation: /Users/admin/Documents/idea/code/milvus-actual/img
 engine:
   # 虹软
   arcSoft:

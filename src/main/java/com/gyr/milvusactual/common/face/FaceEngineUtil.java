@@ -25,13 +25,14 @@ import static com.arcsoft.face.toolkit.ImageFactory.getRGBData;
  */
 @Component
 @Log4j2
-public class faceUtils {
+public class FaceEngineUtil {
     private GenericObjectPool<FaceEngine> faceEngineGenericObjectPool;
-    faceUtils(){
+    FaceEngineUtil(){
         // 对象池工厂
         FaceEnginePoolFactory personPoolFactory = new FaceEnginePoolFactory();
         // 对象池配置
         GenericObjectPoolConfig<FaceEngine> objectPoolConfig = new GenericObjectPoolConfig<>();
+        objectPoolConfig.setJmxEnabled(false);
         objectPoolConfig.setMaxTotal(5);
         AbandonedConfig abandonedConfig = new AbandonedConfig();
 
@@ -96,8 +97,7 @@ public class faceUtils {
             try {
                 BufferedImage subimage = bufImage.getSubimage(left, top, right - left, bottom - left);
                 ImageIO.write(subimage, "png", stream);
-                String base64 = Base64.encode(stream.toByteArray());
-                return base64;
+                return Base64.encode(stream.toByteArray());
             }catch (Exception e){
                 return null;
             }finally {
@@ -105,7 +105,7 @@ public class faceUtils {
                 fileInputStream.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }finally {
 
         }
