@@ -12,6 +12,8 @@ database:
 engine:
   # 虹软
   arcSoft:
-    appId:
-    sdkKey:
-    lib:
+    appId: APRt68C3sT6X2TfJpgSZv4NszZC7YRTewxtv4gqstAeS
+    sdkKey: AxL7CDAZqt19Z1zayyVdS61KkP7THhCfjQewqmR3bfZY
+    lib: D:\IdeaProjects\milvus-actual\src\main\resources\lib\WIN64
+    testImgOne: D:\IdeaProjects\milvus-actual\src\main\resources\img\1.jpg
+    testImgTwo: D:\IdeaProjects\milvus-actual\src\main\resources\img\4.jpg

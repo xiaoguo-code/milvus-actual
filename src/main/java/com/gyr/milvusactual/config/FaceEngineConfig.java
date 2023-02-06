@@ -14,5 +14,7 @@ public class FaceEngineConfig {
     public String appId;
     public String sdkKey;
     public String lib;
+    public String testImgOne;
+    public String testImgTwo;
 
 }

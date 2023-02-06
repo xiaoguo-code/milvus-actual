@@ -1,5 +1,6 @@
 package com.gyr.milvusactual;
 
+import cn.hutool.json.JSONUtil;
 import com.arcsoft.face.*;
 import com.arcsoft.face.enums.*;
 import com.arcsoft.face.toolkit.ImageInfo;
@@ -9,6 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.arcsoft.face.toolkit.ImageInfoEx;
+import com.gyr.milvusactual.config.FaceEngineConfig;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.arcsoft.face.toolkit.ImageFactory.getGrayData;
 import static com.arcsoft.face.toolkit.ImageFactory.getRGBData;
@@ -22,10 +29,15 @@ import static com.arcsoft.face.toolkit.ImageFactory.getRGBData;
  * @date:2023/2/5 2:56 下午
  * @author:guoyr
  */
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = MilvusActualApplication.class)
 public class FaceEngineTest {
 
+    @Autowired
+    private FaceEngineConfig faceEngineConfig;
 
-    public static void main(String[] args) {
+    @Test
+    public void engineTest() {
 
         //从官网获取
         String appId = "APRt68C3sT6X2TfJpgSZv4NszZC7YRTewxtv4gqstAeS";
@@ -33,9 +45,9 @@ public class FaceEngineTest {
 
         String libPath = "/Users/admin/Documents/学习/milvus/ArcSoft_ArcFace_Java_Linux_x64_V3.0/libs/LINUX64";
 //        String libPath = "/usr/local/soft/faceEngine/arcFace/libs/LINUX64";
-        FaceEngine faceEngine = new FaceEngine(libPath);
+        FaceEngine faceEngine = new FaceEngine(faceEngineConfig.getLib());
         //激活引擎
-        int errorCode = faceEngine.activeOnline(appId, sdkKey);
+        int errorCode = faceEngine.activeOnline(faceEngineConfig.getAppId(), faceEngineConfig.getSdkKey());
 
         if (errorCode != ErrorInfo.MOK.getValue() && errorCode != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED.getValue()) {
             System.out.println("引擎激活失败");
@@ -76,11 +88,11 @@ public class FaceEngineTest {
 
         //人脸检测
 //        String imgPath1 = "/Users/admin/Documents/学习/milvus/testImg/刘亦菲.png";
-        String imgPath1 = "/usr/local/soft/faceEngine/testTmg/刘亦菲.png";
-        ImageInfo imageInfo = getRGBData(new File(imgPath1));
+        String imgPath1 = "C:\\Users\\41071\\Pictures\\img\\1.jpg";
+        ImageInfo imageInfo = getRGBData(new File(faceEngineConfig.getTestImgOne()));
         List<FaceInfo> faceInfoList = new ArrayList<FaceInfo>();
         errorCode = faceEngine.detectFaces(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfoList);
-        System.out.println(faceInfoList);
+        System.out.println(JSONUtil.toJsonStr(faceInfoList));
 
         //特征提取
         FaceFeature faceFeature = new FaceFeature();
@@ -89,8 +101,8 @@ public class FaceEngineTest {
 
         //人脸检测2
 //        String imgPath2 = "/Users/admin/Documents/学习/milvus/testImg/刘亦菲.png";
-        String imgPath2 = "/usr/local/soft/faceEngine/testTmg/刘亦菲.png";
-        ImageInfo imageInfo2 = getRGBData(new File(imgPath2));
+        String imgPath2 = "C:\\Users\\41071\\Pictures\\img\\3.jpg";
+        ImageInfo imageInfo2 = getRGBData(new File(faceEngineConfig.getTestImgTwo()));
         List<FaceInfo> faceInfoList2 = new ArrayList<FaceInfo>();
         errorCode = faceEngine.detectFaces(imageInfo2.getImageData(), imageInfo2.getWidth(), imageInfo2.getHeight(), imageInfo2.getImageFormat(), faceInfoList2);
         System.out.println(faceInfoList2);
