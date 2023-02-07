@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+初始化底库：
+<div>
+    <form action="/file/initAlbumBatch" method="post" enctype="multipart/form-data">
+        图片压缩包：<input type="file" name="file"><br/>
+        集合：<input type="text" name="collection"><br/>
+        <input type="submit" id="initButton" value="提交">
+    </form>
+</div>
+<div>===================</div>
+查询：
+<div>
+    <form action="/search" method="post" enctype="multipart/form-data">
+        图片文件：<input type="file" name="file"><br/>
+        集合：<input type="text" name="collection"><br/>
+        分数：<input type="text" name="score"><br/>
+        <input type="submit" id="searchButton" value="提交">
+    </form>
+</div>
+
+</body>
+</html>

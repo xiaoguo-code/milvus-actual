@@ -3,6 +3,7 @@ package com.gyr.milvusactual.common.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -13,16 +14,17 @@ import java.util.zip.ZipFile;
 public class ZipUtils {
     /**
      * zip文件解压
-     * @param inputFile  待解压文件夹/文件
-     * @param destDirPath  解压路径
+     *
+     * @param inputFile   待解压文件夹/文件
+     * @param destDirPath 解压路径
      */
-    public static void zipUncompress(String inputFile,String destDirPath) throws Exception {
+    public static void zipUncompress(String inputFile, String destDirPath) throws Exception {
         File srcFile = new File(inputFile);//获取当前压缩文件
         // 判断源文件是否存在
         if (!srcFile.exists()) {
             throw new Exception(srcFile.getPath() + "所指文件不存在");
         }
-        ZipFile zipFile = new ZipFile(srcFile);//创建压缩文件对象
+        ZipFile zipFile = new ZipFile(srcFile, Charset.forName("GBK"));//创建压缩文件对象
         //开始解压
         Enumeration<?> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
@@ -53,9 +55,10 @@ public class ZipUtils {
             }
         }
     }
+
     public static void main(String[] args) {
         try {
-            zipUncompress("D:\\ytt.zip","D:\\ytt的解压文件");
+            zipUncompress("D:\\ytt.zip", "D:\\ytt的解压文件");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -5,13 +5,16 @@ import io.milvus.grpc.DataType;
 import io.milvus.param.collection.CreateCollectionParam;
 import io.milvus.param.collection.FieldType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 底库集合详情配置
  */
 public class AlbumCollectionConfig {
 
     /**
-     * 集合名称(库名)
+     * 集合默认名称(库名)
      */
     public static final String COLLECTION_NAME = "people";
     /**
@@ -25,7 +28,7 @@ public class AlbumCollectionConfig {
     /**
      * 分区数量
      */
-    public static final Integer PARTITION_NUM = 5;
+    public static final Integer PARTITION_NUM = 1;
 
     /**
      * 分区前缀
@@ -34,7 +37,14 @@ public class AlbumCollectionConfig {
     /**
      * 特征值维度，[经度，维度，性别，年龄，身高，体重]
      */
-    public static final Integer FEATURE_DIM = 6;
+    public static final Integer FEATURE_DIM = 256;
+
+    /**
+     * 返回的topN
+     */
+    public static final Integer SEARCH_K = 10;
+
+    public static final String SEARCH_PARAM = "{\"nprobe\":10}";
 
     /**
      * 字段
@@ -63,6 +73,18 @@ public class AlbumCollectionConfig {
      */
     public static String getPartitionName(Integer num) {
         return PARTITION_PREFIX + (num % PARTITION_NUM + 1);
+    }
+
+    /**
+     * 获取所有分区
+     * @return
+     */
+    public static List<String> getAllPertitionName() {
+        List<String> partitions = new ArrayList<>();
+        for (Integer i = 1; i <= PARTITION_NUM; i++) {
+            partitions.add(PARTITION_PREFIX + i);
+        }
+        return partitions;
     }
 
     /**

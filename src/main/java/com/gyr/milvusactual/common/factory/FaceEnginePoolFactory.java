@@ -7,6 +7,7 @@ import com.arcsoft.face.FunctionConfiguration;
 import com.arcsoft.face.enums.DetectMode;
 import com.arcsoft.face.enums.DetectOrient;
 import com.arcsoft.face.enums.ErrorInfo;
+import com.gyr.milvusactual.common.util.SpringContext;
 import com.gyr.milvusactual.config.FaceEngineConfig;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class FaceEnginePoolFactory extends BasePooledObjectFactory<FaceEngine> {
 
-    @Autowired
-    private FaceEngineConfig faceEngineConfig;
     /**
      * 在对象池中创建对象
      * @return
@@ -29,6 +28,8 @@ public class FaceEnginePoolFactory extends BasePooledObjectFactory<FaceEngine> {
      */
     @Override
     public FaceEngine create() throws Exception {
+        FaceEngineConfig faceEngineConfig = SpringContext.getBean(FaceEngineConfig.class);
+
         FaceEngine faceEngine = new FaceEngine(faceEngineConfig.getLib());
         //激活引擎
         int errorCode = faceEngine.activeOnline(faceEngineConfig.getAppId(), faceEngineConfig.getSdkKey());

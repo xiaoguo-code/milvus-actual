@@ -5,6 +5,7 @@ import com.gyr.milvusactual.config.AlbumCollectionConfig;
 import com.gyr.milvusactual.dao.VectorDbService;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.*;
+import io.milvus.param.MetricType;
 import io.milvus.param.R;
 import io.milvus.param.RpcStatus;
 import io.milvus.param.alias.AlterAliasParam;
@@ -14,18 +15,21 @@ import io.milvus.param.collection.*;
 import io.milvus.param.control.GetCompactionStateParam;
 import io.milvus.param.dml.DeleteParam;
 import io.milvus.param.dml.InsertParam;
+import io.milvus.param.dml.SearchParam;
 import io.milvus.param.partition.CreatePartitionParam;
 import io.milvus.param.partition.DropPartitionParam;
 import io.milvus.param.partition.HasPartitionParam;
 import io.milvus.param.partition.ShowPartitionsParam;
 import io.milvus.response.DescCollResponseWrapper;
 import io.milvus.response.GetCollStatResponseWrapper;
+import io.milvus.response.SearchResultsWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -482,6 +486,45 @@ public class MilvusServiceImpl implements VectorDbService {
 
     /*----------------------------------------------------------------------*/
 
+
+    // 根据向量搜索数据
+    @Override
+    public List<?> searchByFeature(String collection, List<List<Float>> search_vectors) {
+        MilvusServiceClient milvusServiceClient = null;
+        try {
+            // 通过对象池管理对象
+            milvusServiceClient = milvusServiceClientGenericObjectPool.borrowObject();
+            List<String> search_output_fields = Arrays.asList(AlbumCollectionConfig.Field.ID, AlbumCollectionConfig.Field.NAME);
+            SearchParam searchParam = SearchParam.newBuilder()
+                    .withCollectionName(collection)
+                    .withPartitionNames(AlbumCollectionConfig.getAllPertitionName())
+                    .withMetricType(MetricType.L2)
+                    .withOutFields(search_output_fields)
+                    .withTopK(AlbumCollectionConfig.SEARCH_K)
+                    .withVectors(search_vectors)
+                    .withVectorFieldName(AlbumCollectionConfig.Field.FEATURE)
+                    .withParams(AlbumCollectionConfig.SEARCH_PARAM)
+                    .build();
+            R<SearchResults> respSearch = milvusServiceClient.search(searchParam);
+            if (respSearch.getStatus() == 0) {
+                SearchResultsWrapper wrapperSearch = new SearchResultsWrapper(respSearch.getData().getResults());
+                List<?> idData = wrapperSearch.getFieldData(AlbumCollectionConfig.Field.ID, 0);
+                List<?> nameData = wrapperSearch.getFieldData(AlbumCollectionConfig.Field.NAME, 0);
+                return nameData;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+
+        } finally {
+            // 回收对象到对象池
+            if (milvusServiceClient != null) {
+                milvusServiceClientGenericObjectPool.returnObject(milvusServiceClient);
+            }
+        }
+        return new ArrayList<>();
+    }
+
     /**
      * 插入数据
      *
@@ -493,7 +536,7 @@ public class MilvusServiceImpl implements VectorDbService {
      * @return
      */
     @Override
-    public long insert(String collectionName, String partitionName, List<Long> ids, List<String> names, List<List<Float>> features) {
+    public Long insert(String collectionName, String partitionName, List<Long> ids, List<String> names, List<List<Float>> features) {
 
         MilvusServiceClient milvusServiceClient = null;
         try {
@@ -518,14 +561,14 @@ public class MilvusServiceImpl implements VectorDbService {
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return 0;
+            return null;
         } finally {
             // 回收对象到对象池
             if (milvusServiceClient != null) {
                 milvusServiceClientGenericObjectPool.returnObject(milvusServiceClient);
             }
         }
-        return 0;
+        return null;
     }
 
     /**

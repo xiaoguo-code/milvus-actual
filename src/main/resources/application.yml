@@ -9,14 +9,35 @@ database:
     host: 124.221.237.254
     port: 19530
 
+
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      # 单个文件的最大上限
+      max-file-size: 1000MB
+      # 单个请求的文件总大小上限
+      max-request-size: 1000MB
   mvc:
     pathmatch:
+      # 解决swagger3的报错问题
       matching-strategy: ant_path_matcher
+  thymeleaf:
+    # html存放的具体路径，可进行自定义，示例：resources/templates
+    prefix: classpath:/templates/
+    encoding: UTF-8
+    cache: false
+    suffix: .html
+    servlet:
+      content-type: text/html
 
 
+# 文件上传后的存储路劲
 uploadFile:
-  tempLocation: /Users/admin/Documents/idea/code/milvus-actual/img
+#  tempLocation: /Users/admin/Documents/idea/code/milvus-actual/img
+  tempLocation: D:\IdeaProjects\milvus-actual\img
+
+# ai引擎
 engine:
   # 虹软
   arcSoft:
@@ -25,3 +46,4 @@ engine:
     lib: D:\IdeaProjects\milvus-actual\src\main\resources\lib\WIN64
     testImgOne: D:\IdeaProjects\milvus-actual\src\main\resources\img\1.jpg
     testImgTwo: D:\IdeaProjects\milvus-actual\src\main\resources\img\4.jpg
+

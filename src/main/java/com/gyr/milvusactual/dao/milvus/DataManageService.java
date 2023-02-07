@@ -19,6 +19,15 @@ public interface DataManageService {
 
 
     /**
+     * 矢量搜索
+     *
+     * @param collection
+     * @param search_vectors
+     * @return
+     */
+    public List<?> searchByFeature(String collection, List<List<Float>> search_vectors);
+
+    /**
      * 插入数据
      *
      * @param collectionName
@@ -28,7 +37,7 @@ public interface DataManageService {
      * @param feature
      * @return
      */
-    long insert(String collectionName, String partitionName, List<Long> ids, List<String> name, List<List<Float>> feature);
+    Long insert(String collectionName, String partitionName, List<Long> ids, List<String> name, List<List<Float>> feature);
 
     /**
      * 删除数据
