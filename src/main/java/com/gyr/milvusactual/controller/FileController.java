@@ -163,7 +163,7 @@ public class FileController {
                 List<List<Float>> features = new ArrayList<>();
                 ids.add((long) i);
                 featureKeys.add(featureKey);
-                features.add(ByteUtils.byteArray2List(feature));
+                features.add(ByteUtils.byteArrayToFloatList(feature));
                 Long insert = vectorDbService.insert(collection, AlbumCollectionConfig.getPartitionName(i), ids, featureKeys, features);
                 if (insert != null) {
                     log.info("file:{},特征值入库成功", name);

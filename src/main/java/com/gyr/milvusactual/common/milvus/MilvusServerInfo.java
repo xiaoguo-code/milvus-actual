@@ -24,12 +24,12 @@ public class MilvusServerInfo {
      */
     public static Integer PORT;
 
-    @Value("${database.milvus.host:124.221.237.254}")
+    @Value("${spring.data.milvus.host:}")
     public void setHost(String host) {
         MilvusServerInfo.HOST = host;
     }
 
-    @Value("${database.milvus.port:19530}")
+    @Value("${spring.data.milvus.port:19530}")
     public void setPort(Integer port) {
         MilvusServerInfo.PORT = port;
     }

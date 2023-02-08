@@ -11,6 +11,11 @@ import io.milvus.response.GetCollStatResponseWrapper;
  */
 public interface IndexsManageService {
 
-
+    /**
+     * 创建索引
+     * @param collectionName 集合名
+     * @return true or false
+     */
+    Boolean createIndex(String collectionName);
 
 }

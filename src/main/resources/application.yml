@@ -1,15 +1,6 @@
 server:
   port: 8888
 
-
-
-
-database:
-  milvus:
-    host: 124.221.237.254
-    port: 19530
-
-
 spring:
   servlet:
     multipart:
@@ -30,6 +21,34 @@ spring:
     suffix: .html
     servlet:
       content-type: text/html
+  data:
+    # milvus矢量数据库连接信息
+    milvus:
+      host: MY-SERVER
+      port: 19530
+    # mongo连接信息
+    mongodb:
+      uri: mongodb://guoyr:guoyr%402021@MY-SERVER:27017/admin
+      database: guoyr
+      option:
+        min-connection-per-host: 0
+        max-connection-per-host: 100
+        threads-allowed-to-block-for-connection-multiplier: 5
+        server-selection-timeout: 30000
+        max-wait-time: 12000
+        max-connection-idle-time: 0
+        max-connection-life-time: 0
+        connect-timeout: 0
+        socket-timeout: 0
+        socket-keep-alive: false
+        ssl-enabled: false
+        ssl-invalid-host-name-allowed: false
+        always-use-m-beans: false
+        heartbeat-socket-timeout: 20000
+        heartbeat-connect-timeout: 20000
+        min-heartbeat-frequency: 500
+        heartbeat-frequency: 10000
+        local-threshold: 15
 
 
 # 文件上传后的存储路劲

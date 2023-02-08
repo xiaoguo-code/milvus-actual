@@ -16,6 +16,7 @@ import io.milvus.param.control.GetCompactionStateParam;
 import io.milvus.param.dml.DeleteParam;
 import io.milvus.param.dml.InsertParam;
 import io.milvus.param.dml.SearchParam;
+import io.milvus.param.index.DescribeIndexParam;
 import io.milvus.param.partition.CreatePartitionParam;
 import io.milvus.param.partition.DropPartitionParam;
 import io.milvus.param.partition.HasPartitionParam;
@@ -497,7 +498,7 @@ public class MilvusServiceImpl implements VectorDbService {
             List<String> search_output_fields = Arrays.asList(AlbumCollectionConfig.Field.ID, AlbumCollectionConfig.Field.NAME);
             SearchParam searchParam = SearchParam.newBuilder()
                     .withCollectionName(collection)
-                    .withPartitionNames(AlbumCollectionConfig.getAllPertitionName())
+                    .withPartitionNames(AlbumCollectionConfig.getAllPartitionName())
                     .withMetricType(MetricType.L2)
                     .withOutFields(search_output_fields)
                     .withTopK(AlbumCollectionConfig.SEARCH_K)
@@ -646,4 +647,35 @@ public class MilvusServiceImpl implements VectorDbService {
         return null;
     }
 
+    /**
+     * 创建索引
+     *
+     * @param collectionName 集合名
+     * @return true or false
+     */
+    @Override
+    public Boolean createIndex(String collectionName) {
+        MilvusServiceClient milvusServiceClient = null;
+        try {
+            // 通过对象池管理对象
+            milvusServiceClient = milvusServiceClientGenericObjectPool.borrowObject();
+            R<RpcStatus> index = milvusServiceClient.createIndex(AlbumCollectionConfig.getCreateIndexParam());
+            boolean isSuccess = index.getStatus() == 0;
+            R<DescribeIndexResponse> describeIndexResp = milvusServiceClient.describeIndex(
+                    DescribeIndexParam.newBuilder()
+                            .withCollectionName(AlbumCollectionConfig.COLLECTION_NAME)
+                            .build());
+            log.info("集合{}创建索引:{}", collectionName, isSuccess);
+            log.info("集合{}索引详情:{}", collectionName, describeIndexResp.toString());
+            return isSuccess;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            // 回收对象到对象池
+            if (milvusServiceClient != null) {
+                milvusServiceClientGenericObjectPool.returnObject(milvusServiceClient);
+            }
+        }
+        return false;
+    }
 }

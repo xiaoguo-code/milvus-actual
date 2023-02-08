@@ -74,12 +74,21 @@ public class CollectionOperationTest {
         createIndexTest();
 
 
+    }
+
+    @Test
+    public void mockData(){
+
         //插入数据
         dataInsertCollectionTest();
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //获取集合大小
         collectionStatisticsTest();
-
     }
 
     /**
@@ -114,37 +123,7 @@ public class CollectionOperationTest {
             IP:内积 (IP)
             。。。
          */
-        //创建索引
-        final String INDEX_PARAM = "{\"nlist\":1024}";     //索引构建的参数nlist（集群单元数），表示每个segment下的单元数
-        MilvusServiceClient milvusServiceClient = null;
-        try {
-            milvusServiceClient = milvusServiceClientGenericObjectPool.borrowObject();
-            R<RpcStatus> index = milvusServiceClient.createIndex(
-                    CreateIndexParam.newBuilder()
-                            .withCollectionName(AlbumCollectionConfig.COLLECTION_NAME)
-                            .withFieldName(AlbumCollectionConfig.Field.FEATURE)         //字段名
-                            .withIndexType(IndexType.IVF_FLAT)        //索引类型，
-                            .withMetricType(MetricType.L2)    //设置指标类型，距离的计算方式
-                            .withExtraParam(INDEX_PARAM)      //外加参数
-                            .withSyncMode(Boolean.FALSE)      //同步模式，默认为true
-//                        .withSyncWaitingInterval(500L)    //同步等待间隔，默认500毫秒
-//                        .withSyncWaitingTimeout(600L)      //同步等待超时，默认600秒
-                            .build());
-
-            System.out.println("创建指定集合索引，response：" + index.toString());
-            R<DescribeIndexResponse> describeIndexResp = milvusServiceClient.describeIndex(
-                    DescribeIndexParam.newBuilder()
-                            .withCollectionName(AlbumCollectionConfig.COLLECTION_NAME)
-                            .build());
-            System.out.println("describeIndex查看执行集合索引,response:" + describeIndexResp.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // 回收对象到对象池
-            if (milvusServiceClient != null) {
-                milvusServiceClientGenericObjectPool.returnObject(milvusServiceClient);
-            }
-        }
+        vectorDbService.createIndex(AlbumCollectionConfig.COLLECTION_NAME);
     }
 
 

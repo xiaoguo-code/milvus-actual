@@ -22,8 +22,11 @@ public class DataMockUtil {
             People people = new People();
             people.setId((long) i);
             people.setName("name" + i);
-            //[经度，维度，性别，年龄，身高，体重]
-            people.setFeature(Lists.newArrayList(mockLonLat(90), mockLonLat(180), mockGender(2), mockAge(100), mockHeight(200), mockWeight(200)));
+            List<Float> vector = new ArrayList<>();
+            people.setFeature(vector);
+            for (int j = 0; j < AlbumCollectionConfig.FEATURE_DIM; j++) {
+                vector.add(mockLonLat(180));
+            }
             people.setPartition(AlbumCollectionConfig.getPartitionName(i));
             peopleList.add(people);
         }

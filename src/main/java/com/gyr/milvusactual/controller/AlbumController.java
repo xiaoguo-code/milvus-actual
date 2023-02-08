@@ -8,7 +8,6 @@ import com.gyr.milvusactual.common.util.FileUtil;
 import com.gyr.milvusactual.config.AlbumCollectionConfig;
 import com.gyr.milvusactual.dao.VectorDbService;
 import com.gyr.milvusactual.service.FaceEngineService;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class AlbumController {
     FaceEngineService faceEngineService;
 
     @PostMapping("/create")
-    @ApiOperation(value = "创建底库")
+//    @ApiOperation(value = "创建底库")
     public Result create(@RequestParam("collection") String collection) {
         if (StringUtils.isBlank(collection)) {
             return Result.error(ResultCodeEnum.PARAM_ERROR);
@@ -51,7 +50,7 @@ public class AlbumController {
     }
 
     @PostMapping("/delete")
-    @ApiOperation(value = "删除底库")
+//    @ApiOperation(value = "删除底库")
     public Result delete(@RequestParam("collection") String collection) {
         if (StringUtils.isBlank(collection)) {
             return Result.error(ResultCodeEnum.PARAM_ERROR);
@@ -63,7 +62,7 @@ public class AlbumController {
     }
 
     @PostMapping("/search")
-    @ApiOperation(value = "底库1:N")
+//    @ApiOperation(value = "底库1:N")
     public Result search(
             @RequestPart("file") MultipartFile multipartFile,
             @RequestParam("collection") String collection,
@@ -74,7 +73,7 @@ public class AlbumController {
         byte[] bytes = faceEngineService.faceFindCropFeature(file);
         //矢量检索
         List<List<Float>> searchVectors = new ArrayList<>();
-        List<Float> vectors = ByteUtils.byteArray2List(bytes);
+        List<Float> vectors = ByteUtils.byteArrayToFloatList(bytes);
         searchVectors.add(vectors);
         List<?> list = vectorDbService.searchByFeature(collection, searchVectors);
         Result ok = Result.ok(ResultCodeEnum.SUCCESS);

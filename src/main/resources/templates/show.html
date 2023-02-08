@@ -7,8 +7,8 @@
 <body>
 
 <div>
-    <span th:each="obj,index:${dataMap}">
-        <img th:src="${obj.value}" alt="" style="width: 150px; height: 150px">
+    <span th:each="obj,index:${dataList}">
+        <img th:src="${obj.imageUrl}" alt="" style="width: 150px; height: 150px">
     </span>
 </div>
 
