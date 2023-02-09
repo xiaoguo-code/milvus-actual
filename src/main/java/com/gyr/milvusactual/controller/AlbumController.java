@@ -7,10 +7,14 @@ import com.gyr.milvusactual.common.util.ByteUtils;
 import com.gyr.milvusactual.common.util.FileUtil;
 import com.gyr.milvusactual.config.AlbumCollectionConfig;
 import com.gyr.milvusactual.dao.VectorDbService;
+import com.gyr.milvusactual.entity.FaceInfo;
 import com.gyr.milvusactual.service.FaceEngineService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/album")
 @Slf4j
@@ -31,6 +36,8 @@ public class AlbumController {
 
     @Autowired
     FaceEngineService faceEngineService;
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @PostMapping("/create")
 //    @ApiOperation(value = "创建底库")
@@ -65,8 +72,8 @@ public class AlbumController {
 //    @ApiOperation(value = "底库1:N")
     public Result search(
             @RequestPart("file") MultipartFile multipartFile,
-            @RequestParam("collection") String collection,
-            @RequestParam("score") double score
+            @RequestParam(value = "collection", required = false) String collection,
+            @RequestParam(value = "score", required = false) Double score
     ) throws IOException {
         File file = FileUtil.multipartFileToFile(multipartFile);
         //获取特征值
@@ -75,15 +82,21 @@ public class AlbumController {
         List<List<Float>> searchVectors = new ArrayList<>();
         List<Float> vectors = ByteUtils.byteArrayToFloatList(bytes);
         searchVectors.add(vectors);
-        List<?> list = vectorDbService.searchByFeature(collection, searchVectors);
-        Result ok = Result.ok(ResultCodeEnum.SUCCESS);
-        for (Object featureKey : list) {
-            String featureKeyStr = String.valueOf(featureKey);
-            if (FileController.imgRepositoryMap.containsKey(featureKeyStr)) {
-                ok.data(featureKeyStr, FileController.imgRepositoryMap.get(featureKeyStr));
+        List<?> list = vectorDbService.searchByFeature(AlbumCollectionConfig.COLLECTION_NAME, searchVectors);
+        Criteria criteria = Criteria.where("_id").in(list);
+        Query query = Query.query(criteria);
+        List<FaceInfo> faceInfos = mongoTemplate.find(query, FaceInfo.class, "face_album");
+        List<FaceInfo> result = new ArrayList<>();
+        for (Object id : list) {
+            for (FaceInfo faceInfo : faceInfos) {
+                if (faceInfo.get_id().equals(id)) {
+                    result.add(faceInfo);
+                }
             }
+
         }
-        return ok;
+        log.info("查询数量:{}", result.size());
+        return Result.ok(ResultCodeEnum.SUCCESS).data("data",result);
     }
 
 }

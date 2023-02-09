@@ -71,9 +71,20 @@ public class IndexController {
         Criteria criteria = Criteria.where("_id").in(list);
         Query query = Query.query(criteria);
         List<FaceInfo> faceInfos = mongoTemplate.find(query, FaceInfo.class, "face_album");
-        log.info("查询数量:{}", faceInfos.size());
-        model.addAttribute("dataList", faceInfos);
+        List<FaceInfo> result = new ArrayList<>();
+        for (Object id : list) {
+            for (FaceInfo faceInfo : faceInfos) {
+                if (faceInfo.get_id().equals(id)) {
+                    result.add(faceInfo);
+                }
+            }
+
+        }
+        log.info("查询数量:{}", result.size());
+        model.addAttribute("dataList", result);
         return "show";
     }
+
+
 
 }
